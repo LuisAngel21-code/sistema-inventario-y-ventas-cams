@@ -8,16 +8,14 @@ import {
 } from 'lucide-react';
 
 const navItems = [
-  { path: '/', label: 'Balance', icon: LayoutDashboard },
-  { path: '/ventas', label: 'Ventas', icon: ShoppingCart },
-  { path: '/productos', label: 'Productos', icon: Package },
-  { path: '/inventario', label: 'Inventario', icon: Warehouse },
-  { path: '/vendedores', label: 'Vendedores', icon: Users },
-  { path: '/reportes', label: 'Reportes', icon: FileBarChart },
-  { path: '/caja', label: 'Caja', icon: Wallet, rol: 'administradora' },
-  { path: '/agenda', label: 'Agenda', icon: Calendar },
-  { path: '/trabajadores', label: 'Trabajadores', icon: Briefcase, rol: 'administradora' },
-  { path: '/pagos', label: 'Pagos', icon: DollarSign, rol: 'administradora' },
+  { path: '/', label: 'Balance', icon: LayoutDashboard, roles: ['admin','administrador','jefe','encargado_almacen','jefe_produccion','agente_ventas','administradora'] },
+  { path: '/productos', label: 'Productos', icon: Package, roles: ['encargado_almacen','admin','administrador','jefe'] },
+  { path: '/inventario', label: 'Inventario', icon: Warehouse, roles: ['encargado_almacen','admin','administrador','jefe','jefe_produccion'] },
+  { path: '/ventas', label: 'Ventas', icon: ShoppingCart, roles: ['agente_ventas','admin','administrador','jefe'] },
+  { path: '/reportes', label: 'Reportes', icon: FileBarChart, roles: ['admin','administrador','jefe'] },
+  { path: '/vendedores', label: 'Vendedores', icon: Users, roles: ['encargado_almacen','admin','administrador','jefe'] },
+  { path: '/agenda', label: 'Agenda', icon: Calendar, roles: ['admin','administrador','jefe'] },
+  { path: '/caja', label: 'Caja', icon: Wallet, roles: ['administradora','admin','administrador'] },
 ];
 
 export default function Layout() {
@@ -82,7 +80,7 @@ export default function Layout() {
 
         {/* Nav */}
         <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
-          {navItems.filter(item => !item.rol || user?.rol === item.rol).map((item) => {
+          {navItems.filter(item => !item.roles || item.roles.includes(user?.rol)).map((item) => {
             const isActive = location.pathname === item.path || location.pathname.startsWith(item.path + '/');
             const Icon = item.icon;
             return (

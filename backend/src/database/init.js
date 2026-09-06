@@ -320,7 +320,7 @@ async function initDatabase() {
   await query(`
     DO $$ BEGIN
       ALTER TABLE usuarios DROP CONSTRAINT IF EXISTS usuarios_rol_check;
-      ALTER TABLE usuarios ADD CONSTRAINT usuarios_rol_check CHECK (rol IN ('admin', 'vendedor', 'administradora'));
+      ALTER TABLE usuarios ADD CONSTRAINT usuarios_rol_check CHECK (rol IN ('admin','administrador','vendedor','administradora','encargado_almacen','jefe_produccion','agente_ventas','jefe'));
     END $$;
   `);
 

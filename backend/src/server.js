@@ -4,6 +4,7 @@ const cors = require('cors');
 const morgan = require('morgan');
 const path = require('path');
 const { authenticate, role } = require('./middlewares/auth');
+// Roles: admin, administrador, jefe, encargado_almacen, jefe_produccion, agente_ventas, administradora
 const { query } = require('./config/database');
 
 const authRoutes = require('./routes/auth');
@@ -36,16 +37,15 @@ async function start() {
     res.json({ status: 'ok', timestamp: new Date().toISOString() });
   });
 
-app.use('/api/vendedores', vendedoresRoutes);
-app.use('/api/productos', productosRoutes);
-app.use('/api/ventas', ventasRoutes);
-app.use('/api/inventario', inventarioRoutes);
-app.use('/api/reportes', reportesRoutes);
+  // RBAC por HU
+  app.use('/api/vendedores', role('encargado_almacen','admin','administrador','jefe'), vendedoresRoutes);
+  app.use('/api/productos', role('encargado_almacen','admin','administrador','jefe'), productosRoutes);
+  app.use('/api/inventario', role('encargado_almacen','admin','administrador','jefe','jefe_produccion'), inventarioRoutes);
+  app.use('/api/ventas', role('agente_ventas','admin','administrador','jefe'), ventasRoutes);
+  app.use('/api/reportes', role('admin','administrador','jefe'), reportesRoutes);
 app.use('/api/categorias', require('./routes/categorias'));
 app.use('/api/marcas', require('./routes/marcas'));
-app.use('/api/pagos', role('administradora'), require('./routes/pagos'));
 app.use('/api/exportes', require('./routes/exportes'));
-app.use('/api/caja', require('./routes/caja'));
 app.use('/api/balance', require('./routes/balance'));
 app.use('/api/config', require('./routes/config'));
   app.use('/uploads', express.static(path.join(__dirname, '../uploads')));

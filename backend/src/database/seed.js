@@ -46,6 +46,17 @@ async function seed() {
     [hashAdmin2]
   );
 
+  // Usuarios por HU — todos contra cams2026
+  for (const [user, rol] of [
+    ['almacen@cams.com', 'encargado_almacen'],
+    ['produccion@cams.com', 'jefe_produccion'],
+    ['ventas@cams.com', 'agente_ventas'],
+    ['jefe@cams.com', 'jefe'],
+  ]) {
+    const h = await bcrypt.hash('cams2026', 10);
+    await query("INSERT INTO usuarios (username, password, rol) VALUES ($1, $2, $3)", [user, h, rol]);
+  }
+
   await query(`INSERT INTO productos (codigo, nombre, descripcion, costo, precio_base, stock, stock_minimo, categoria) VALUES
     ('CAMA-001', 'Cama Queen Size Clásica', 'Cama queen size de madera sólida', 2500.00, 3500.00, 10, 2, 'Camas'),
     ('CAMA-002', 'Cama King Size Premium', 'Cama king size con cabecero tapizado', 4000.00, 5600.00, 5, 1, 'Camas'),
@@ -61,8 +72,12 @@ async function seed() {
 
   console.log('Datos iniciales insertados correctamente');
   console.log('Usuarios creados:');
-  console.log('  admin@cams.com / cams2026');
-  console.log('  jorge@gmail.com / jorge2026');
+  console.log('  admin@cams.com / cams2026 (admin)');
+  console.log('  admincamas@2.com / cams2026 (administradora)');
+  console.log('  almacen@cams.com / cams2026 (encargado_almacen) — HU-04..07');
+  console.log('  produccion@cams.com / cams2026 (jefe_produccion) — HU-08');
+  console.log('  ventas@cams.com / cams2026 (agente_ventas) — HU-09,10');
+  console.log('  jefe@cams.com / cams2026 (jefe) — HU-06,11,12');
 }
 
 seed().catch(err => {
