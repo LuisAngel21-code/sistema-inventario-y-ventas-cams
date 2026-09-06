@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ventasAPI, vendedoresAPI, productosAPI, trabajadoresAPI } from '../services/api';
+import { ventasAPI, vendedoresAPI, productosAPI } from '../services/api';
 import { Plus, Trash2, Save, ArrowLeft, DollarSign, Upload } from 'lucide-react';
 import Button from '../components/ui/Button';
 import Select from '../components/ui/Select';
@@ -10,10 +10,8 @@ import { useToast } from '../context/ToastContext';
 export default function NuevaVenta() {
   const navigate = useNavigate();
   const [vendedores, setVendedores] = useState([]);
-  const [encargados, setEncargados] = useState([]);
   const [productos, setProductos] = useState([]);
   const [vendedorId, setVendedorId] = useState('');
-  const [esEncargado, setEsEncargado] = useState(false);
   const [items, setItems] = useState([{ producto_id: '', cantidad: 1, precio_final: '' }]);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -29,15 +27,8 @@ export default function NuevaVenta() {
   const { showToast } = useToast();
 
   useEffect(() => {
-    Promise.all([
-      vendedoresAPI.getAll(),
-      productosAPI.getAll(true),
-      trabajadoresAPI.getAll().then(t => t.filter(trab => trab.tipo === 'encargado' && trab.activo !== false)),
-    ]).then(([vends, prods, encs]) => {
-      setVendedores(vends);
-      setEncargados(encs);
-      setProductos(prods);
-      setLoading(false);
+    Promise.all([vendedoresAPI.getAll(), productosAPI.getAll(true)]).then(([vends, prods]) => {
+      setVendedores(vends); setProductos(prods); setLoading(false);
     }).catch(console.error);
   }, []);
 
@@ -86,11 +77,7 @@ export default function NuevaVenta() {
     setSaving(true);
     try {
       const formData = new FormData();
-      if (esEncargado) {
-        formData.append('trabajador_id', Number(vendedorId));
-      } else {
-        formData.append('vendedor_id', Number(vendedorId));
-      }
+      formData.append('vendedor_id', Number(vendedorId));
       formData.append('tipo_venta', tipoVenta);
       if (tipoVenta !== 'directa') formData.append('monto_acta', Number(montoActa));
       formData.append('tipo_comprobante', tipoComprobante);
@@ -214,29 +201,13 @@ export default function NuevaVenta() {
         </div>
 
         <div className="card-page p-5">
-          <div className="space-y-1.5">
-            <label className="input-label">Vendedor / Encargado</label>
-            <select className="input-field" value={vendedorId}
-              onChange={(e) => {
-                const val = e.target.value;
-                setEsEncargado(val.startsWith('enc-'));
-                setVendedorId(val.replace('enc-', ''));
-              }}>
-              <option value="">Seleccionar...</option>
-              <optgroup label="Vendedores">
-                {vendedores.map(v => (
-                  <option key={`ven-${v.id}`} value={v.id}>{v.nombre} {v.apellido}</option>
-                ))}
-              </optgroup>
-              {encargados.length > 0 && (
-                <optgroup label="Encargados">
-                  {encargados.map(v => (
-                    <option key={`enc-${v.id}`} value={`enc-${v.id}`}>{v.nombre} {v.apellido}</option>
-                  ))}
-                </optgroup>
-              )}
-            </select>
-          </div>
+          <Select
+            label="Vendedor"
+            placeholder="Seleccionar vendedor..."
+            value={vendedorId}
+            onChange={e => setVendedorId(e.target.value)}
+            options={vendedores.map(v => ({ value: v.id, label: `${v.nombre} ${v.apellido}` }))}
+          />
         </div>
 
         <div className="card-page p-5 space-y-4">

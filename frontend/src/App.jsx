@@ -10,11 +10,7 @@ import ProductosPage from './pages/ProductosPage';
 import InventarioPage from './pages/InventarioPage';
 import VendedoresPage from './pages/VendedoresPage';
 import ReportesPage from './pages/ReportesPage';
-import PagosPage from './pages/PagosPage';
 import CajaPage from './pages/CajaPage';
-import EntregasPage from './pages/EntregasPage';
-import AgendaPage from './pages/AgendaPage';
-import TrabajadoresPage from './pages/TrabajadoresPage';
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
@@ -57,10 +53,6 @@ function AppRoutes() {
         <Route path="/vendedores" element={<VendedoresPage />} />
         <Route path="/reportes" element={<ReportesPage />} />
         <Route path="/caja" element={<CajaPage />} />
-        <Route path="/entregas" element={<EntregasPage />} />
-        <Route path="/agenda" element={<AgendaPage />} />
-        <Route path="/trabajadores" element={<TrabajadoresPage />} />
-        <Route path="/pagos" element={<PagosPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
     </Routes>

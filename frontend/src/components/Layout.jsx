@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import {
   LayoutDashboard, ShoppingCart, Package, Warehouse,
   Users, FileBarChart, LogOut, Menu, X,
-  ChevronRight, Store, UserCircle, DollarSign, Wallet, Truck, Calendar, Briefcase,
+  ChevronRight, Store, UserCircle, DollarSign, Wallet, Calendar, Briefcase,
 } from 'lucide-react';
 
 const navItems = [
@@ -15,7 +15,6 @@ const navItems = [
   { path: '/vendedores', label: 'Vendedores', icon: Users },
   { path: '/reportes', label: 'Reportes', icon: FileBarChart },
   { path: '/caja', label: 'Caja', icon: Wallet, rol: 'administradora' },
-  { path: '/entregas', label: 'Entregas', icon: Truck, rol: 'administradora' },
   { path: '/agenda', label: 'Agenda', icon: Calendar },
   { path: '/trabajadores', label: 'Trabajadores', icon: Briefcase, rol: 'administradora' },
   { path: '/pagos', label: 'Pagos', icon: DollarSign, rol: 'administradora' },
